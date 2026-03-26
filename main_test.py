@@ -1,58 +1,41 @@
 import pytest
 import re
 
-def regex_test(expected, lines):
-    i = 0 ; match = 0
+def regex_test(expected, content):
+    pos = 0
     for token in expected:
-        for j in range(i, len(lines)):
-            res = re.search(token, lines[j])
-            if res is not None:
-                i = j + 1
-                match += 1
-                break
-        else:
-            print(f'\033[91m Not Found: {token} \033[0m')
-            assert False, f'Expect: {expected}'
-    else:
-        print(f'\033[91m match count: {match} \033[0m')
-        assert match == len(expected), f'Expect: {expected}'
-
+        res = re.search(token, content[pos:])
+        if res is None:
+            assert False, f'Expect: {token}'
+        pos += res.start() + 1
 
 @pytest.mark.T1
 def test_main_1():
-    # Input: 3 → rows: A / A B / A B C
-    with open('result1.txt', 'r') as f:
-        lines = f.readlines()
-    print(lines)
-    lines = [line.strip() for line in lines]
-    regex_test([r'^A$', r'^A B$', r'^A B C$'], lines)
+    # Input: 3 -> rows: A / A B / A B C
+    content = open('result1.txt').read()
+    print(content)
+    regex_test([r'(?m)^A$', r'(?m)^A B$', r'(?m)^A B C$'], content)
 
 
 @pytest.mark.T2
 def test_main_2():
-    # Input: 5 → rows: A / A B / A B C / A B C D / A B C D E
-    with open('result2.txt', 'r') as f:
-        lines = f.readlines()
-    print(lines)
-    lines = [line.strip() for line in lines]
-    regex_test([r'^A$', r'^A B C$', r'^A B C D E$'], lines)
+    # Input: 5 -> rows: A / A B / A B C / A B C D / A B C D E
+    content = open('result2.txt').read()
+    print(content)
+    regex_test([r'(?m)^A$', r'(?m)^A B C$', r'(?m)^A B C D E$'], content)
 
 
 @pytest.mark.T3
 def test_main_3():
-    # Input: 4 → rows: A / A B / A B C / A B C D
-    with open('result3.txt', 'r') as f:
-        lines = f.readlines()
-    print(lines)
-    lines = [line.strip() for line in lines]
-    regex_test([r'^A$', r'^A B C$', r'^A B C D$'], lines)
+    # Input: 4 -> rows: A / A B / A B C / A B C D
+    content = open('result3.txt').read()
+    print(content)
+    regex_test([r'(?m)^A$', r'(?m)^A B C$', r'(?m)^A B C D$'], content)
 
 
 @pytest.mark.T4
 def test_main_4():
-    # Input: 6 → rows: A / A B / ... / A B C D E F
-    with open('result4.txt', 'r') as f:
-        lines = f.readlines()
-    print(lines)
-    lines = [line.strip() for line in lines]
-    regex_test([r'^A$', r'^A B C D$', r'^A B C D E F$'], lines)
+    # Input: 6 -> rows: A / A B / ... / A B C D E F
+    content = open('result4.txt').read()
+    print(content)
+    regex_test([r'(?m)^A$', r'(?m)^A B C D$', r'(?m)^A B C D E F$'], content)
